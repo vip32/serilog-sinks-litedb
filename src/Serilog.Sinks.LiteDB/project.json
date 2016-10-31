@@ -16,18 +16,14 @@
     "iconUrl": "http://serilog.net/images/serilog-sink-nuget.png"
   },
   "dependencies": {
-    "MongoDB.Driver": "2.3.0",
-    "Serilog": "2.3.0",
-    "Serilog.Sinks.PeriodicBatching": "2.1.0"
+    "LiteDB": "2.0.2",
+    "Serilog": "2.3.0"
   },
   "frameworks": {
     "net4.5": {
       "frameworkAssemblies": {
         "System.Configuration": "4.0"
       },
-      "dependencies": {}
-    },
-    "netstandard1.5": {
       "dependencies": {}
     }
   }
