@@ -15,11 +15,11 @@ The database and collection will be created if they do not exist.
 ```csharp
 // basic usage defaults to writing to `log` collection
 var log = new LoggerConfiguration()
-    .WriteTo.LiteDB("c:\tmp\logs.db")
+    .WriteTo.LiteDB(@"c:\tmp\logs.db")
     .CreateLogger();
 
 // creates custom collection `applog`
 var log = new LoggerConfiguration()
-    .WriteTo.LiteDB("c:\tmp\logs.db", collectionName: "applog")
+    .WriteTo.LiteDB(@"c:\tmp\logs.db", collectionName: "applog")
     .CreateLogger();
 ```
