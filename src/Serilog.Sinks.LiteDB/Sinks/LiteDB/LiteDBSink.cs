@@ -25,7 +25,8 @@ namespace Serilog.Sinks.LiteDB
     public class LiteDBSink : ILogEventSink
     {
         private readonly string _connectionString;
-        readonly string _collectionName;
+        private readonly IFormatProvider _formatProvider;
+        private readonly string _collectionName;
 
         /// <summary>
         /// Construct a sink posting to the specified database.
@@ -44,6 +45,7 @@ namespace Serilog.Sinks.LiteDB
             string collectionName = DefaultCollectionName)
         {
             _connectionString = connectionString;
+            _formatProvider = formatProvider;
         }
 
         /// <summary>
@@ -75,7 +77,7 @@ namespace Serilog.Sinks.LiteDB
             }
         }
 
-        private static BsonDocument Convert(LogEvent logEvent)
+        private  BsonDocument Convert(LogEvent logEvent)
         {
             var doc = new BsonDocument();
             doc["_id"] = ObjectId.NewObjectId();
@@ -83,7 +85,7 @@ namespace Serilog.Sinks.LiteDB
             //doc["Timestamp"] = logEvent.Timestamp.UtcDateTime;
             doc["Level"] = logEvent.Level.ToString();
             doc["Template"] = logEvent.MessageTemplate.Text;
-            doc["Message"] = logEvent.RenderMessage();
+            doc["Message"] = logEvent.RenderMessage(_formatProvider);
             if (logEvent.Exception != null)
             {
                 // TODO
