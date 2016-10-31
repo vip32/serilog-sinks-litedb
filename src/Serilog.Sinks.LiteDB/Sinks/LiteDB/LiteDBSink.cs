@@ -70,53 +70,57 @@ namespace Serilog.Sinks.LiteDB
         {
             using (var db = new LiteDatabase(_connectionString))
             {
-                var col = db.GetCollection(DefaultCollectionName);
-
-                var doc = new BsonDocument();
-                doc["_id"] = ObjectId.NewObjectId();
-                doc["Timestamp"] = logEvent.Timestamp.ToUniversalTime().DateTime;
-                //doc["Timestamp"] = logEvent.Timestamp.UtcDateTime;
-                doc["Level"] = logEvent.Level.ToString();
-                doc["Template"] = logEvent.MessageTemplate.Text;
-                doc["Message"] = logEvent.RenderMessage();
-                if (logEvent.Exception != null)
-                {
-                    // TODO
-                    doc.Set($"Exception.Message", logEvent.Exception.Message);
-                    doc.Set($"Exception.StackTrace", logEvent.Exception.StackTrace);
-                    doc.Set($"Exception.Source", logEvent.Exception.Source);
-                }
-                if (logEvent.Properties != null)
-                {
-                    foreach (var property in logEvent.Properties)
-                    {
-                        var scalar = property.Value as ScalarValue;
-                        if (scalar != null)
-                        {
-                            doc.Set($"Properties.{property.Key}", new BsonValue(scalar.Value));
-                        }
-                        //var seq = property.Value as SequenceValue;
-                        //if (seq != null)
-                        //{
-                        //    doc.Set($"Properties.{property.Key}", new BsonValue(seq));
-                        //}
-
-                        //var str = property.Value as StructureValue;
-                        //if (str != null)
-                        //{
-                        //    doc.Set($"Properties.{property.Key}", new BsonValue(str));
-                        //}
-
-                        //var div = property.Value as DictionaryValue;
-                        //if (div != null)
-                        //{
-                        //    doc.Set($"Properties.{property.Key}", new BsonValue(property.Value.ToString()));
-                        //}
-                    }
-                }
-
-                col.Insert(doc);
+                db.GetCollection(DefaultCollectionName)
+                    .Insert(Convert(logEvent));
             }
+        }
+
+        private static BsonDocument Convert(LogEvent logEvent)
+        {
+            var doc = new BsonDocument();
+            doc["_id"] = ObjectId.NewObjectId();
+            doc["Timestamp"] = logEvent.Timestamp.ToUniversalTime().DateTime;
+            //doc["Timestamp"] = logEvent.Timestamp.UtcDateTime;
+            doc["Level"] = logEvent.Level.ToString();
+            doc["Template"] = logEvent.MessageTemplate.Text;
+            doc["Message"] = logEvent.RenderMessage();
+            if (logEvent.Exception != null)
+            {
+                // TODO
+                doc.Set($"Exception.Message", new BsonValue(logEvent.Exception.Message));
+                doc.Set($"Exception.StackTrace", new BsonValue(logEvent.Exception.StackTrace));
+                doc.Set($"Exception.Source", new BsonValue(logEvent.Exception.Source));
+            }
+            if (logEvent.Properties != null)
+            {
+                foreach (var property in logEvent.Properties)
+                {
+                    var scalar = property.Value as ScalarValue;
+                    if (scalar != null)
+                    {
+                        doc.Set($"Properties.{property.Key}", new BsonValue(scalar.Value));
+                    }
+                    //var seq = property.Value as SequenceValue;
+                    //if (seq != null)
+                    //{
+                    //    doc.Set($"Properties.{property.Key}", new BsonValue(seq));
+                    //}
+
+                    //var str = property.Value as StructureValue;
+                    //if (str != null)
+                    //{
+                    //    doc.Set($"Properties.{property.Key}", new BsonValue(str));
+                    //}
+
+                    //var div = property.Value as DictionaryValue;
+                    //if (div != null)
+                    //{
+                    //    doc.Set($"Properties.{property.Key}", new BsonValue(property.Value.ToString()));
+                    //}
+                }
+            }
+
+            return doc;
         }
     }
 }

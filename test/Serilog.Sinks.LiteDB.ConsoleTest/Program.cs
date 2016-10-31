@@ -19,6 +19,7 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
             Log.Information("integer {nummer}", 123);
             Log.Information("string {text}", "hallo");
             Log.Information("datetime {DateNow}", DateTime.Now);
+            Log.Fatal(new ArgumentNullException("haha"), "exception {msg}", "Exception!");
         }
     }
 }
