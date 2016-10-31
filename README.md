@@ -6,7 +6,7 @@
 A Serilog sink that writes events as documents to [LiteDB](http://litedb.org).
 
 **Package** - [Serilog.Sinks.LiteDB](http://nuget.org/packages/serilog.sinks.litedb)
-| **Platforms** - .NET 4.6
+| **Platforms** - .NET 4.5
 
 
 In the example shown, the sink will write to the database `logs`. The default collection name is `log`, but a custom collection can be supplied with the optional `CollectionName` parameter.
