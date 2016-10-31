@@ -1,6 +1,7 @@
 # Serilog.Sinks.LiteDB
 
 [![Build status](https://ci.appveyor.com/api/projects/status/50a20wxfl1klrsra/branch/master?svg=true)](https://ci.appveyor.com/project/vip32/serilog-sinks-litedb/branch/master)
+[![NuGet](https://img.shields.io/nuget/v/serilog.sinks.litedb.svg)](https://www.nuget.org/packages/serilog.sinks.litedb/)
 
 A Serilog sink that writes events as documents to [LiteDB](http://litedb.org).
 
