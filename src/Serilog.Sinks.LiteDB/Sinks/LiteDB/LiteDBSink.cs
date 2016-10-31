@@ -46,6 +46,7 @@ namespace Serilog.Sinks.LiteDB
         {
             _connectionString = connectionString;
             _formatProvider = formatProvider;
+            _collectionName = collectionName;
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Serilog.Sinks.LiteDB
         {
             using (var db = new LiteDatabase(_connectionString))
             {
-                db.GetCollection(DefaultCollectionName)
+                db.GetCollection(_collectionName)
                     .Insert(Convert(logEvent));
             }
         }
