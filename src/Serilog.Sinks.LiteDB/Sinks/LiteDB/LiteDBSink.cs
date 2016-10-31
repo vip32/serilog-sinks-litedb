@@ -32,15 +32,11 @@ namespace Serilog.Sinks.LiteDB
         /// Construct a sink posting to the specified database.
         /// </summary>
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
-        /// <param name="batchPostingLimit">The maximum number of events to post in a single batch.</param>
-        /// <param name="period">The time to wait between checking for event batches.</param>
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
         /// <param name="collectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
         /// <param name="collectionCreationOptions">Collection Creation Options for the log collection creation.</param>
         public LiteDBSink(
             string connectionString,
-            int batchPostingLimit = DefaultBatchPostingLimit,
-            TimeSpan? period = null,
             IFormatProvider formatProvider = null,
             string collectionName = DefaultCollectionName)
         {

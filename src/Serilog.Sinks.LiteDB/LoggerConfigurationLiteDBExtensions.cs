@@ -28,20 +28,23 @@ namespace Serilog
         /// </summary>
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="databaseUrl">The URL of a created LiteDB collection that log events will be written to.</param>
-        /// <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
         /// <param name="collectionName">Name of the collection. Default is "log".</param>
-        /// <param name="batchPostingLimit">The maximum number of events to post in a single batch.</param>
-        /// <param name="period">The time to wait between checking for event batches.</param>
+        /// <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
-        /// <returns>Logger configuration, allowing configuration to continue.</returns>
+        /// <returns>
+        /// Logger configuration, allowing configuration to continue.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// loggerConfiguration
+        /// or
+        /// databaseUrl
+        /// </exception>
         /// <exception cref="ArgumentNullException">A required parameter is null.</exception>
         public static LoggerConfiguration LiteDB(
             this LoggerSinkConfiguration loggerConfiguration,
             string databaseUrl,
             string collectionName = Serilog.Sinks.LiteDB.LiteDBSink.DefaultCollectionName,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-            int batchPostingLimit = Serilog.Sinks.LiteDB.LiteDBSink.DefaultBatchPostingLimit,
-            TimeSpan? period = null,
             IFormatProvider formatProvider = null)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
@@ -49,7 +52,7 @@ namespace Serilog
 
             return
                 loggerConfiguration.Sink(
-                    new Serilog.Sinks.LiteDB.LiteDBSink(databaseUrl, batchPostingLimit, period, formatProvider, collectionName),
+                    new Serilog.Sinks.LiteDB.LiteDBSink(databaseUrl, formatProvider, collectionName),
                     restrictedToMinimumLevel);
         }
     }
