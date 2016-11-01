@@ -38,7 +38,42 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
             {
                 target.Add("Exception", MapException(source.Exception));
             }
+            MapProperties(source, target);
             return target;
+        }
+
+        private static void MapProperties(LogEvent source, BsonDocument target)
+        {
+            if (source.Properties != null)
+            {
+                foreach (var property in source.Properties)
+                {
+                    var scalar = property.Value as ScalarValue;
+                    if (scalar != null)
+                    {
+                        target.Set($"prop_{property.Key}".ToLower(), new BsonValue(scalar.Value));
+                    }
+
+                    // TODO
+                    //var seq = property.Value as SequenceValue;
+                    //if (seq != null)
+                    //{
+                    //    doc.Set($"Properties.{property.Key}", new BsonValue(seq));
+                    //}
+
+                    //var str = property.Value as StructureValue;
+                    //if (str != null)
+                    //{
+                    //    doc.Set($"Properties.{property.Key}", new BsonValue(str));
+                    //}
+
+                    //var div = property.Value as DictionaryValue;
+                    //if (div != null)
+                    //{
+                    //    doc.Set($"Properties.{property.Key}", new BsonValue(property.Value.ToString()));
+                    //}
+                }
+            }
         }
 
         /// <summary>
