@@ -79,13 +79,11 @@ namespace Serilog.Sinks.LiteDB
             var doc = new BsonDocument();
             doc["_id"] = ObjectId.NewObjectId();
             doc["Timestamp"] = logEvent.Timestamp.ToUniversalTime().DateTime;
-            //doc["Timestamp"] = logEvent.Timestamp.UtcDateTime;
             doc["Level"] = logEvent.Level.ToString();
             doc["Template"] = logEvent.MessageTemplate.Text;
             doc["Message"] = logEvent.RenderMessage(_formatProvider);
             if (logEvent.Exception != null)
             {
-                // TODO
                 doc.Set($"Exception.Message", new BsonValue(logEvent.Exception.Message));
                 doc.Set($"Exception.StackTrace", new BsonValue(logEvent.Exception.StackTrace));
                 doc.Set($"Exception.Source", new BsonValue(logEvent.Exception.Source));
@@ -99,6 +97,8 @@ namespace Serilog.Sinks.LiteDB
                     {
                         doc.Set($"Properties.{property.Key}", new BsonValue(scalar.Value));
                     }
+
+                    // TODO
                     //var seq = property.Value as SequenceValue;
                     //if (seq != null)
                     //{

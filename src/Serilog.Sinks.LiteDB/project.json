@@ -1,19 +1,24 @@
 {
-  "version": "1.0.6-*",
-
+  "version": "1.0.7-*",
   "title": "Serilog.Sinks.LiteDB",
   "description": "The LiteDB sink for Serilog",
   "authors": [ "vip32" ],
-
   "packOptions": {
-    "tags": [
-      "serilog",
-      "litedb",
-      "nosql"
-    ],
+    "tags": [ "serilog", "litedb", "nosql" ],
+    "summary": "LiteDB sink for Hangfire",
+    "owners": [ "vip32" ],
+    "releaseNotes": "",
     "projectUrl": "https://github.com/vip32/serilog-sinks-litedb",
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
-    "iconUrl": "http://serilog.net/images/serilog-sink-nuget.png"
+    "iconUrl": "http://serilog.net/images/serilog-sink-nuget.png",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/vip32/serilog-sinks-litedb"
+    }
+  },
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "xmlDoc": true
   },
   "dependencies": {
     "LiteDB": "2.0.2",
