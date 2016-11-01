@@ -34,7 +34,6 @@ namespace Serilog.Sinks.LiteDB
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
         /// <param name="collectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
-        /// <param name="collectionCreationOptions">Collection Creation Options for the log collection creation.</param>
         public LiteDBSink(
             string connectionString,
             IFormatProvider formatProvider = null,
