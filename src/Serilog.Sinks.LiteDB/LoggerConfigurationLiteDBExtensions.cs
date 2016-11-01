@@ -43,7 +43,7 @@ namespace Serilog
         public static LoggerConfiguration LiteDB(
             this LoggerSinkConfiguration loggerConfiguration,
             string databaseUrl,
-            string collectionName = Serilog.Sinks.LiteDB.LiteDBSink.DefaultCollectionName,
+            string collectionName = Sinks.MongoDB.Sinks.LiteDB.LiteDBSink.DefaultCollectionName,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
             IFormatProvider formatProvider = null)
         {
@@ -52,7 +52,7 @@ namespace Serilog
 
             return
                 loggerConfiguration.Sink(
-                    new Serilog.Sinks.LiteDB.LiteDBSink(databaseUrl, formatProvider, collectionName),
+                    new Serilog.Sinks.MongoDB.Sinks.LiteDB.LiteDBSink(databaseUrl, formatProvider, collectionName),
                     restrictedToMinimumLevel);
         }
     }
