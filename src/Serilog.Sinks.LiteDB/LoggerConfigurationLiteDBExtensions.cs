@@ -15,6 +15,9 @@
 using System;
 using Serilog.Configuration;
 using Serilog.Events;
+using Serilog.Formatting;
+using Serilog.Formatting.Compact;
+using Serilog.Sinks.MongoDB.Sinks.LiteDB;
 
 namespace Serilog
 {
@@ -30,29 +33,30 @@ namespace Serilog
         /// <param name="databaseUrl">The URL of a created LiteDB collection that log events will be written to.</param>
         /// <param name="collectionName">Name of the collection. Default is "log".</param>
         /// <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
-        /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
+        /// <param name="includeMessageTemplate">if set to <c>true</c> [include message template].</param>
+        /// <param name="formatter">The formatter.</param>
         /// <returns>
         /// Logger configuration, allowing configuration to continue.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
-        /// loggerConfiguration
-        /// or
-        /// databaseUrl
-        /// </exception>
         /// <exception cref="ArgumentNullException">A required parameter is null.</exception>
+        /// <exception cref="System.ArgumentNullException">loggerConfiguration
+        /// or
+        /// databaseUrl</exception>
         public static LoggerConfiguration LiteDB(
             this LoggerSinkConfiguration loggerConfiguration,
             string databaseUrl,
             string collectionName = Sinks.MongoDB.Sinks.LiteDB.LiteDBSink.DefaultCollectionName,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-            IFormatProvider formatProvider = null)
+            bool includeMessageTemplate = false,
+            ITextFormatter formatter = null)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (string.IsNullOrWhiteSpace(databaseUrl)) throw new ArgumentNullException(nameof(databaseUrl));
+            if (string.IsNullOrWhiteSpace(collectionName)) throw new ArgumentNullException(nameof(collectionName));
+            if (formatter == null) formatter = Sinks.MongoDB.Sinks.LiteDB.LiteDBSink.DefaultFormatter;
 
-            return
-                loggerConfiguration.Sink(
-                    new Serilog.Sinks.MongoDB.Sinks.LiteDB.LiteDBSink(databaseUrl, formatProvider, collectionName),
+            return loggerConfiguration.Sink(
+                    new LiteDBSink(databaseUrl, collectionName, includeMessageTemplate, formatter),
                     restrictedToMinimumLevel);
         }
     }

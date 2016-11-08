@@ -8,6 +8,8 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
 {
     public class Program
     {
+        private static readonly ILogger _logger = Log.ForContext<Program>();
+
         public static void Main(string[] args)
         {
             var connectionString = @"c:\tmp\log1.db";
@@ -20,40 +22,58 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
                 .MinimumLevel.Debug()
                 .WriteTo.LiterateConsole(LogEventLevel.Debug)
                 .WriteTo.LiteDB(connectionString)
-                .Enrich.WithProperty("App", "Serilog.Sinks.LiteDB.ConsoleTest")
+                .Enrich.WithProperty("app", "Serilog.Sinks.LiteDB.ConsoleTest")
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
             var customer = new Customer() { Name = "cust1", Id = 23, Culture = "en-GB" };
 
-            Log.Information("TEST1");
-            Log.Information("datetime {date}, string {text}, integer {nummer}", DateTime.Now, "hallo", 105);
-            Log.Information("new customer {@customer}", customer);
-            Log.Information("integer {nummer}", 123);
-            Log.Information("string {text}", "hallo");
-            Log.Information("datetime {date}", DateTime.Now.AddHours(-3));
-            Log.Fatal(new ArgumentNullException("haha", new Exception("INNER")), "exception {msg}", "Exception!");
+            var logger = Log.ForContext<Program>();
+            logger.Debug("TEST1");
+            logger.Debug("datetime {date}, string {text}, integer {nummer}", DateTime.Now, "hallo", 105);
+            logger.Debug("new customer {@customer}", customer);
+            logger.Debug("integer {nummer}", 123);
+            logger.Debug("string {text}", "hallo");
+            logger.Debug("datetime {date}", DateTime.Now.AddHours(-3));
+            logger.Fatal(new ArgumentNullException("haha", new Exception("INNER")), "exception {msg}", "Exception!");
 
             using (var db = new LiteDatabase(connectionString))
             {
-                var result1 = db.GetCollection<BsonDocument>("log").FindOne(Query.Contains("Message", "Test"));
+                var result1 = db.GetCollection<BsonDocument>("log").FindOne(Query.Contains("_m", "Test"));
                 Console.WriteLine(result1.ToString());
                 Console.WriteLine("");
 
-                var result2 = db.GetCollection<BsonDocument>("log").Find(Query.EQ("prop_app", "Serilog.Sinks.LiteDB.ConsoleTest"));
+                var result2 = db.GetCollection<BsonDocument>("log").Find(Query.EQ("app", "Serilog.Sinks.LiteDB.ConsoleTest"));
                 Console.WriteLine(result2.Count());
                 Console.WriteLine("");
 
-                var result3 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("prop_nummer", 100));
+                var result3 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("nummer", 100));
                 Console.WriteLine(result3.Count());
                 Console.WriteLine("");
 
-                var result4 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("prop_date", DateTime.Now.AddHours(-1)));
+                var result4 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("date", DateTime.Now.AddHours(-1)));
                 Console.WriteLine(result4.Count());
                 Console.WriteLine("");
 
-                var documents = db.GetCollection<BsonDocument>("log").FindAll();
-                foreach(var document in documents)
+                //Console.WriteLine(db.Run("db.info").ToString());
+
+                var coll = db.GetCollection<BsonDocument>("log");
+                coll.Insert(new BsonDocument(new System.Collections.Generic.Dictionary<string, BsonValue>
+                    {
+                        { "name", new BsonValue("name1") },
+                        { "created", new BsonValue(DateTime.Now) },
+                    }
+                ));
+
+                var a = db.Run("db.log.find limit 10");
+                foreach(var a1 in a.AsArray)
+                {
+                    var jsonString = JsonSerializer.Serialize(a1, true);
+                    Console.WriteLine(jsonString);
+                }
+
+                var documents = coll.FindAll();
+                foreach (var document in documents)
                 {
                     Console.WriteLine(document.ToString());
 

@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Serilog.Events;
 using Serilog.Core;
 using LiteDB;
+using Serilog.Formatting.Compact;
+using Serilog.Formatting.Json;
+using System.IO;
+using Serilog.Formatting;
 
 namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
 {
@@ -25,40 +28,38 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
     public class LiteDBSink : ILogEventSink
     {
         private readonly string _connectionString;
-        private readonly IFormatProvider _formatProvider;
         private readonly string _collectionName;
+        private readonly ITextFormatter _formatter;
+        private readonly bool _includeMessageTemplate;
 
         /// <summary>
         /// Construct a sink posting to the specified database.
         /// </summary>
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
-        /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
         /// <param name="collectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
+        /// <param name="includeMessageTemplate">if set to <c>true</c> [include message template].</param>
+        /// <param name="formatter">The formatter. Default is <see cref="RenderedCompactJsonFormatter" /> used</param>
         public LiteDBSink(
             string connectionString,
-            IFormatProvider formatProvider = null,
-            string collectionName = DefaultCollectionName)
+            string collectionName = DefaultCollectionName,
+            bool includeMessageTemplate = false,
+            ITextFormatter formatter = null)
         {
             _connectionString = connectionString;
-            _formatProvider = formatProvider;
             _collectionName = collectionName;
+            _includeMessageTemplate = includeMessageTemplate;
+            _formatter = formatter;
         }
-
-        /// <summary>
-        /// A reasonable default for the number of events posted in
-        /// each batch.
-        /// </summary>
-        public const int DefaultBatchPostingLimit = 50;
-
-        /// <summary>
-        /// A reasonable default time to wait between checking for event batches.
-        /// </summary>
-        public static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(2);
 
         /// <summary>
         /// The default name for the log collection.
         /// </summary>
         public const string DefaultCollectionName = "log";
+
+        /// <summary>
+        /// The default formatter
+        /// </summary>
+        public static ITextFormatter DefaultFormatter = new RenderedCompactJsonFormatter();
 
         /// <summary>
         /// Emit the provided log event to the sink.
@@ -68,8 +69,13 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         {
             using (var db = new LiteDatabase(_connectionString))
             {
-                db.GetCollection(_collectionName)
-                    .Insert(DocumentMapper.MapLogEvent(logEvent, _formatProvider));
+                var sw = new StringWriter();
+                _formatter.Format(logEvent, sw);
+                var doc = JsonSerializer.Deserialize(
+                        new StringReader(sw.ToString().Replace("@", "_"))).AsDocument;
+                if(_includeMessageTemplate)
+                    doc.Set("_mt", new BsonValue(logEvent.MessageTemplate.Text));
+                db.GetCollection(_collectionName).Insert(doc);
             }
         }
     }
