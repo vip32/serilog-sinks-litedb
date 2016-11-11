@@ -76,7 +76,6 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
             output.Write(GetIso8601WeekOfYear(logEvent.Timestamp.UtcDateTime));
             output.Write(",\"_m\":");
             JsonValueFormatter.WriteQuotedJsonString(logEvent.MessageTemplate.Render(logEvent.Properties), output);
-
             output.Write(",\"_mt\":");
             JsonValueFormatter.WriteQuotedJsonString(logEvent.MessageTemplate.Text, output);
 
