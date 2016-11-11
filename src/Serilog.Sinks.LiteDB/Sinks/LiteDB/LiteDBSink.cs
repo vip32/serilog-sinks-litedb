@@ -28,33 +28,29 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
     public class LiteDBSink : ILogEventSink
     {
         private readonly string _connectionString;
-        private readonly string _collectionName;
+        private readonly string _logCollectionName;
         private readonly ITextFormatter _formatter;
-        private readonly bool _includeMessageTemplate;
 
         /// <summary>
         /// Construct a sink posting to the specified database.
         /// </summary>
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
-        /// <param name="collectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
-        /// <param name="includeMessageTemplate">if set to <c>true</c> [include message template].</param>
+        /// <param name="logCollectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
         /// <param name="formatter">The formatter. Default is <see cref="LiteDbJsonFormatter" /> used</param>
         public LiteDBSink(
             string connectionString,
-            string collectionName = DefaultCollectionName,
-            bool includeMessageTemplate = false,
+            string logCollectionName = DefaultLogCollectionName,
             ITextFormatter formatter = null)
         {
             _connectionString = connectionString;
-            _collectionName = collectionName;
-            _includeMessageTemplate = includeMessageTemplate;
+            _logCollectionName = logCollectionName;
             _formatter = formatter;
         }
 
         /// <summary>
         /// The default name for the log collection.
         /// </summary>
-        public const string DefaultCollectionName = "log";
+        public const string DefaultLogCollectionName = "log";
 
         /// <summary>
         /// The default formatter
@@ -72,7 +68,7 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
                 var sw = new StringWriter();
                 _formatter.Format(logEvent, sw);
                 var doc = JsonSerializer.Deserialize(new StringReader(sw.ToString())).AsDocument;
-                db.GetCollection(_collectionName).Insert(doc);
+                db.GetCollection(_logCollectionName).Insert(doc);
             }
         }
     }

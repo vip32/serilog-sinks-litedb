@@ -31,9 +31,8 @@ namespace Serilog
         /// </summary>
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="databaseUrl">The URL of a created LiteDB collection that log events will be written to.</param>
-        /// <param name="collectionName">Name of the collection. Default is "log".</param>
+        /// <param name="logCollectionName">Name of the collection. Default is "log".</param>
         /// <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
-        /// <param name="includeMessageTemplate">if set to <c>true</c> [include message template].</param>
         /// <param name="formatter">The formatter.</param>
         /// <returns>
         /// Logger configuration, allowing configuration to continue.
@@ -45,18 +44,17 @@ namespace Serilog
         public static LoggerConfiguration LiteDB(
             this LoggerSinkConfiguration loggerConfiguration,
             string databaseUrl,
-            string collectionName = LiteDBSink.DefaultCollectionName,
+            string logCollectionName = LiteDBSink.DefaultLogCollectionName,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-            bool includeMessageTemplate = false,
             ITextFormatter formatter = null)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (string.IsNullOrWhiteSpace(databaseUrl)) throw new ArgumentNullException(nameof(databaseUrl));
-            if (string.IsNullOrWhiteSpace(collectionName)) throw new ArgumentNullException(nameof(collectionName));
+            if (string.IsNullOrWhiteSpace(logCollectionName)) throw new ArgumentNullException(nameof(logCollectionName));
             if (formatter == null) formatter = LiteDBSink.DefaultFormatter;
 
             return loggerConfiguration.Sink(
-                    new LiteDBSink(databaseUrl, collectionName, includeMessageTemplate, formatter),
+                    new LiteDBSink(databaseUrl, logCollectionName, formatter),
                     restrictedToMinimumLevel);
         }
     }
