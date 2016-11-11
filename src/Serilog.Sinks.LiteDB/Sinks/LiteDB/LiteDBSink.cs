@@ -38,7 +38,7 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
         /// <param name="collectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
         /// <param name="includeMessageTemplate">if set to <c>true</c> [include message template].</param>
-        /// <param name="formatter">The formatter. Default is <see cref="RenderedCompactJsonFormatter" /> used</param>
+        /// <param name="formatter">The formatter. Default is <see cref="LiteDbJsonFormatter" /> used</param>
         public LiteDBSink(
             string connectionString,
             string collectionName = DefaultCollectionName,
@@ -59,7 +59,7 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         /// <summary>
         /// The default formatter
         /// </summary>
-        public static ITextFormatter DefaultFormatter = new RenderedCompactJsonFormatter();
+        public static ITextFormatter DefaultFormatter = new LiteDbJsonFormatter();
 
         /// <summary>
         /// Emit the provided log event to the sink.
@@ -71,10 +71,7 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
             {
                 var sw = new StringWriter();
                 _formatter.Format(logEvent, sw);
-                var doc = JsonSerializer.Deserialize(
-                        new StringReader(sw.ToString().Replace("@", "_"))).AsDocument;
-                if(_includeMessageTemplate)
-                    doc.Set("_mt", new BsonValue(logEvent.MessageTemplate.Text));
+                var doc = JsonSerializer.Deserialize(new StringReader(sw.ToString())).AsDocument;
                 db.GetCollection(_collectionName).Insert(doc);
             }
         }

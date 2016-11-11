@@ -45,7 +45,7 @@ namespace Serilog
         public static LoggerConfiguration LiteDB(
             this LoggerSinkConfiguration loggerConfiguration,
             string databaseUrl,
-            string collectionName = Sinks.MongoDB.Sinks.LiteDB.LiteDBSink.DefaultCollectionName,
+            string collectionName = LiteDBSink.DefaultCollectionName,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
             bool includeMessageTemplate = false,
             ITextFormatter formatter = null)
@@ -53,7 +53,7 @@ namespace Serilog
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (string.IsNullOrWhiteSpace(databaseUrl)) throw new ArgumentNullException(nameof(databaseUrl));
             if (string.IsNullOrWhiteSpace(collectionName)) throw new ArgumentNullException(nameof(collectionName));
-            if (formatter == null) formatter = Sinks.MongoDB.Sinks.LiteDB.LiteDBSink.DefaultFormatter;
+            if (formatter == null) formatter = LiteDBSink.DefaultFormatter;
 
             return loggerConfiguration.Sink(
                     new LiteDBSink(databaseUrl, collectionName, includeMessageTemplate, formatter),
