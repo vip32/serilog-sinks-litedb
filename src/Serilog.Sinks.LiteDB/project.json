@@ -1,5 +1,5 @@
 {
-  "version": "1.0.12-*",
+  "version": "1.0.13-*",
   "title": "Serilog.Sinks.LiteDB",
   "description": "The LiteDB sink for Serilog",
   "authors": [ "vip32" ],
@@ -23,7 +23,7 @@
   "dependencies": {
     "LiteDB": "2.0.2",
     "Serilog": "2.3.0",
-    "Serilog.Formatting.Compact": "1.0.0"
+    "Serilog.Sinks.PeriodicBatching": "2.1.0"
   },
   "frameworks": {
     "net4.5": {

@@ -101,16 +101,13 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
             }
 
             output.Write(",\"_i\":\"");
-            var id = Formatting.Compact.EventIdHash.Compute(logEvent.MessageTemplate.Text);
+            var id = EventIdHash.Compute(logEvent.MessageTemplate.Text);
             output.Write(id.ToString("x8"));
             output.Write('"');
 
-            if (logEvent.Level != LogEventLevel.Information)
-            {
-                output.Write(",\"_l\":\"");
-                output.Write(logEvent.Level);
-                output.Write('\"');
-            }
+            output.Write(",\"_l\":\"");
+            output.Write(logEvent.Level);
+            output.Write('\"');
 
             if (logEvent.Exception != null)
             {
@@ -123,8 +120,8 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
                 var name = property.Key;
                 if (name.Length > 0 && name[0] == '@')
                 {
-                    // Escape first '@' by doubling
-                    name = '@' + name;
+                    // Escape first '@' with _
+                    name = '_' + name;
                 }
 
                 output.Write(',');

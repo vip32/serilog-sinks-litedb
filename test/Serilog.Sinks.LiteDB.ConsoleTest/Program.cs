@@ -37,6 +37,8 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
             logger.Debug("datetime {date}", DateTime.Now.AddHours(-3));
             logger.Fatal(new ArgumentNullException("haha", new Exception("INNER")), "exception {msg}", "Exception!");
 
+            System.Threading.Thread.Sleep(6000);
+
             using (var db = new LiteDatabase(connectionString))
             {
                 var result1 = db.GetCollection<BsonDocument>("log").FindOne(Query.Contains("_m", "Test"));

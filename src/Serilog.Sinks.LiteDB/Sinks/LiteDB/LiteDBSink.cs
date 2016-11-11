@@ -15,17 +15,20 @@
 using Serilog.Events;
 using Serilog.Core;
 using LiteDB;
-using Serilog.Formatting.Compact;
-using Serilog.Formatting.Json;
 using System.IO;
 using Serilog.Formatting;
+using Serilog.Sinks.PeriodicBatching;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
 {
     /// <summary>
     /// Writes log events as documents to a LiteDB database.
     /// </summary>
-    public class LiteDBSink : ILogEventSink
+    public class LiteDBSink : PeriodicBatchingSink
     {
         private readonly string _connectionString;
         private readonly string _logCollectionName;
@@ -35,12 +38,17 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         /// Construct a sink posting to the specified database.
         /// </summary>
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
+        /// <param name="batchPostingLimit">The batch posting limit.</param>
+        /// <param name="period">The period.</param>
         /// <param name="logCollectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
         /// <param name="formatter">The formatter. Default is <see cref="LiteDbJsonFormatter" /> used</param>
         public LiteDBSink(
             string connectionString,
+            int batchPostingLimit = DefaultBatchPostingLimit,
+            TimeSpan? period = null,
             string logCollectionName = DefaultLogCollectionName,
             ITextFormatter formatter = null)
+             : base(batchPostingLimit, period ?? DefaultPeriod)
         {
             _connectionString = connectionString;
             _logCollectionName = logCollectionName;
@@ -48,9 +56,20 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         }
 
         /// <summary>
+        /// A reasonable default for the number of events posted in
+        /// each batch.
+        /// </summary>
+        public const int DefaultBatchPostingLimit = 50;
+
+        /// <summary>
         /// The default name for the log collection.
         /// </summary>
         public const string DefaultLogCollectionName = "log";
+
+        /// <summary>
+        /// A reasonable default time to wait between checking for event batches.
+        /// </summary>
+        public static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(2);
 
         /// <summary>
         /// The default formatter
@@ -58,18 +77,27 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         public static ITextFormatter DefaultFormatter = new LiteDbJsonFormatter();
 
         /// <summary>
-        /// Emit the provided log event to the sink.
+        /// Emit a batch of log events, running asynchronously.
         /// </summary>
-        /// <param name="logEvent">The log event to write.</param>
-        public void Emit(LogEvent logEvent)
+        /// <param name="events">The events to emit.</param>
+        /// <remarks>
+        /// Override either <see cref="M:Serilog.Sinks.PeriodicBatching.PeriodicBatchingSink.EmitBatch(System.Collections.Generic.IEnumerable{Serilog.Events.LogEvent})" /> or <see cref="M:Serilog.Sinks.PeriodicBatching.PeriodicBatchingSink.EmitBatchAsync(System.Collections.Generic.IEnumerable{Serilog.Events.LogEvent})" />,
+        /// not both. Overriding EmitBatch() is preferred.
+        /// </remarks>
+        protected override void EmitBatch(IEnumerable<LogEvent> events)
         {
             using (var db = new LiteDatabase(_connectionString))
             {
-                var sw = new StringWriter();
-                _formatter.Format(logEvent, sw);
-                var doc = JsonSerializer.Deserialize(new StringReader(sw.ToString())).AsDocument;
-                db.GetCollection(_logCollectionName).Insert(doc);
+                db.GetCollection(_logCollectionName)
+                    .Insert(events.Select(e => AsDocument(e, _formatter)));
             }
+        }
+
+        private BsonDocument AsDocument(LogEvent @event, ITextFormatter formatter)
+        {
+            var sw = new StringWriter();
+            formatter.Format(@event, sw);
+            return JsonSerializer.Deserialize(new StringReader(sw.ToString())).AsDocument;
         }
     }
 }

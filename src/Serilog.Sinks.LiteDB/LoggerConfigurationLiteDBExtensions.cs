@@ -16,7 +16,6 @@ using System;
 using Serilog.Configuration;
 using Serilog.Events;
 using Serilog.Formatting;
-using Serilog.Formatting.Compact;
 using Serilog.Sinks.MongoDB.Sinks.LiteDB;
 
 namespace Serilog
@@ -33,19 +32,23 @@ namespace Serilog
         /// <param name="databaseUrl">The URL of a created LiteDB collection that log events will be written to.</param>
         /// <param name="logCollectionName">Name of the collection. Default is "log".</param>
         /// <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
+        /// <param name="batchPostingLimit">The batch posting limit.</param>
+        /// <param name="period">The period.</param>
         /// <param name="formatter">The formatter.</param>
         /// <returns>
         /// Logger configuration, allowing configuration to continue.
         /// </returns>
-        /// <exception cref="ArgumentNullException">A required parameter is null.</exception>
         /// <exception cref="System.ArgumentNullException">loggerConfiguration
         /// or
         /// databaseUrl</exception>
+        /// <exception cref="ArgumentNullException">A required parameter is null.</exception>
         public static LoggerConfiguration LiteDB(
             this LoggerSinkConfiguration loggerConfiguration,
             string databaseUrl,
             string logCollectionName = LiteDBSink.DefaultLogCollectionName,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+            int batchPostingLimit = LiteDBSink.DefaultBatchPostingLimit,
+            TimeSpan? period = null,
             ITextFormatter formatter = null)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
@@ -54,7 +57,7 @@ namespace Serilog
             if (formatter == null) formatter = LiteDBSink.DefaultFormatter;
 
             return loggerConfiguration.Sink(
-                    new LiteDBSink(databaseUrl, logCollectionName, formatter),
+                    new LiteDBSink(databaseUrl, batchPostingLimit, period, logCollectionName, formatter),
                     restrictedToMinimumLevel);
         }
     }
