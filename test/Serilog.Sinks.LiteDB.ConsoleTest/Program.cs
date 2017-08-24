@@ -41,25 +41,25 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
 
             using (var db = new LiteDatabase(connectionString))
             {
-                var result1 = db.GetCollection<BsonDocument>("log").FindOne(Query.Contains("_m", "Test"));
+                var result1 = db.GetCollection("log").FindOne(Query.Contains("_m", "TEST"));
                 Console.WriteLine(result1.ToString());
                 Console.WriteLine("");
 
-                var result2 = db.GetCollection<BsonDocument>("log").Find(Query.EQ("app", "Serilog.Sinks.LiteDB.ConsoleTest"));
+                var result2 = db.GetCollection("log").Find(Query.EQ("app", "Serilog.Sinks.LiteDB.ConsoleTest"));
                 Console.WriteLine(result2.Count());
                 Console.WriteLine("");
 
-                var result3 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("nummer", 100));
+                var result3 = db.GetCollection("log").Find(Query.GTE("nummer", 100));
                 Console.WriteLine(result3.Count());
                 Console.WriteLine("");
 
-                var result4 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("date", DateTime.Now.AddHours(-1)));
+                var result4 = db.GetCollection("log").Find(Query.GTE("date", DateTime.Now.AddHours(-1)));
                 Console.WriteLine(result4.Count());
                 Console.WriteLine("");
 
                 //Console.WriteLine(db.Run("db.info").ToString());
 
-                var coll = db.GetCollection<BsonDocument>("log");
+                var coll = db.GetCollection("log");
                 coll.Insert(new BsonDocument(new System.Collections.Generic.Dictionary<string, BsonValue>
                     {
                         { "name", new BsonValue("name1") },
@@ -67,8 +67,8 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
                     }
                 ));
 
-                var a = db.Run("db.log.find limit 10");
-                foreach(var a1 in a.AsArray)
+                var a = db.GetCollection("log").Find(Query.All(), 0, 10);
+                foreach(var a1 in a)
                 {
                     var jsonString = JsonSerializer.Serialize(a1, true);
                     Console.WriteLine(jsonString);
@@ -95,4 +95,16 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
         public bool IsActive { get; set; }
         public PlatformID OS { get; set; }
     }
+#if NETCOREAPP1_1
+    public enum PlatformID
+    {
+        Win32S,
+        Win32Windows,
+        Win32NT,
+        WinCE,
+        Unix,
+        Xbox,
+        MacOSX,
+    }
+#endif
 }
