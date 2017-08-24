@@ -45,21 +45,21 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
                 Console.WriteLine(result1.ToString());
                 Console.WriteLine("");
 
-                var result2 = db.GetCollection<BsonDocument>("log").Find(Query.EQ("app", "Serilog.Sinks.LiteDB.ConsoleTest"));
+                var result2 = db.GetCollection("log").Find(Query.EQ("app", "Serilog.Sinks.LiteDB.ConsoleTest"));
                 Console.WriteLine(result2.Count());
                 Console.WriteLine("");
 
-                var result3 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("nummer", 100));
+                var result3 = db.GetCollection("log").Find(Query.GTE("nummer", 100));
                 Console.WriteLine(result3.Count());
                 Console.WriteLine("");
 
-                var result4 = db.GetCollection<BsonDocument>("log").Find(Query.GTE("date", DateTime.Now.AddHours(-1)));
+                var result4 = db.GetCollection("log").Find(Query.GTE("date", DateTime.Now.AddHours(-1)));
                 Console.WriteLine(result4.Count());
                 Console.WriteLine("");
 
                 //Console.WriteLine(db.Run("db.info").ToString());
 
-                var coll = db.GetCollection<BsonDocument>("log");
+                var coll = db.GetCollection("log");
                 coll.Insert(new BsonDocument(new System.Collections.Generic.Dictionary<string, BsonValue>
                     {
                         { "name", new BsonValue("name1") },
