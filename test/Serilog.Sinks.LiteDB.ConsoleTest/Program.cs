@@ -67,8 +67,8 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
                     }
                 ));
 
-                var a = db.Run("db.log.find limit 10");
-                foreach(var a1 in a.AsArray)
+                var a = db.GetCollection("log").Find(Query.All(), 0, 10);
+                foreach(var a1 in a)
                 {
                     var jsonString = JsonSerializer.Serialize(a1, true);
                     Console.WriteLine(jsonString);
