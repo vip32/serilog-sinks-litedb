@@ -95,4 +95,16 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
         public bool IsActive { get; set; }
         public PlatformID OS { get; set; }
     }
+#if NETCOREAPP1_1
+    public enum PlatformID
+    {
+        Win32S,
+        Win32Windows,
+        Win32NT,
+        WinCE,
+        Unix,
+        Xbox,
+        MacOSX,
+    }
+#endif
 }

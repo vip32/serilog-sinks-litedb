@@ -5,7 +5,7 @@
     <AssemblyTitle>Serilog.Sinks.LiteDB</AssemblyTitle>
     <VersionPrefix>1.0.13</VersionPrefix>
     <Authors>vip32</Authors>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworks>net45;netcoreapp1.1</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Serilog.Sinks.LiteDB</AssemblyName>
