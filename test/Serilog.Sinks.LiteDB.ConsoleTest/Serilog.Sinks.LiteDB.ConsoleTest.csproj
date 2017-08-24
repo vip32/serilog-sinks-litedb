@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net45</TargetFramework>
+    <AssemblyName>Serilog.Sinks.LiteDB.ConsoleTest</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Serilog.Sinks.LiteDB.ConsoleTest</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Serilog.Sinks.LiteDB\Serilog.Sinks.LiteDB.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="LiteDB" Version="2.0.2" />
+    <PackageReference Include="Serilog" Version="2.3.0" />
+    <PackageReference Include="Serilog.Sinks.Literate" Version="2.0.0" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>
