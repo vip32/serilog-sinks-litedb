@@ -16,6 +16,7 @@ using System;
 using Serilog.Configuration;
 using Serilog.Events;
 using Serilog.Formatting;
+using Serilog.Sinks.LiteDB;
 using Serilog.Sinks.MongoDB.Sinks.LiteDB;
 
 namespace Serilog
@@ -31,6 +32,7 @@ namespace Serilog
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="databaseUrl">The URL of a created LiteDB collection that log events will be written to.</param>
         /// <param name="logCollectionName">Name of the collection. Default is "log".</param>
+        /// <param name="rollingFilePeriod">Which period must be used to create a new file. 'Never' value applies default behavior (never create a new file)</param>
         /// <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
         /// <param name="batchPostingLimit">The batch posting limit.</param>
         /// <param name="period">The period.</param>
@@ -46,6 +48,7 @@ namespace Serilog
             this LoggerSinkConfiguration loggerConfiguration,
             string databaseUrl,
             string logCollectionName = LiteDBSink.DefaultLogCollectionName,
+            RollingPeriod rollingFilePeriod = RollingPeriod.Never,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
             int batchPostingLimit = LiteDBSink.DefaultBatchPostingLimit,
             TimeSpan? period = null,
@@ -57,7 +60,7 @@ namespace Serilog
             if (formatter == null) formatter = LiteDBSink.DefaultFormatter;
 
             return loggerConfiguration.Sink(
-                    new LiteDBSink(databaseUrl, batchPostingLimit, period, logCollectionName, formatter),
+                    new LiteDBSink(databaseUrl, rollingFilePeriod, batchPostingLimit, period, logCollectionName, formatter),
                     restrictedToMinimumLevel);
         }
     }

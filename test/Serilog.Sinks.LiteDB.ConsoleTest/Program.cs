@@ -1,18 +1,74 @@
 ﻿using LiteDB;
 using Serilog.Events;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 namespace Serilog.Sinks.LiteDB.ConsoleTest
 {
+    public static class TestFileRoller
+    {
+        private const string connStr = "filename=c:\\tmp\\file.db";
+        public static void TestDaily()
+        {
+            var expected = "filename=c:\\tmp\\file_1950-01-12.db";
+            var file = FileRoller.GetFilename(connStr, RollingPeriod.Daily, new DateTime(1950, 01, 12));
+            Debug.Assert(expected == file);
+        }
+
+        public static void TestQuarterly()
+        {
+            const RollingPeriod period = RollingPeriod.Quarterly;
+            
+            var expected = "filename=c:\\tmp\\file_1950-01-12-1000.db";
+            var file = FileRoller.GetFilename(connStr, period, new DateTime(1950, 01, 12, 10, 4, 0));
+            Debug.Assert(expected == file);
+            expected = "filename=c:\\tmp\\file_1950-01-12-1000.db";
+            file = FileRoller.GetFilename(connStr, period, new DateTime(1950, 01, 12, 10, 14, 0));
+            Debug.Assert(expected == file);
+
+            expected = "filename=c:\\tmp\\file_1950-01-12-1015.db";
+            file = FileRoller.GetFilename(connStr, period, new DateTime(1950, 01, 12, 10, 15, 0));
+            Debug.Assert(expected == file);
+
+            expected = "filename=c:\\tmp\\file_1950-01-12-1030.db";
+            file = FileRoller.GetFilename(connStr, period, new DateTime(1950, 01, 12, 10, 30, 0));
+            Debug.Assert(expected == file);
+        }
+
+        public static void TestHourly()
+        {
+            var expected = "filename=c:\\tmp\\file_1950-01-12-10.db";
+            var file = FileRoller.GetFilename(connStr, RollingPeriod.Hourly, new DateTime(1950, 01, 12, 10, 4, 30));
+            Debug.Assert(expected == file);
+
+            expected = "filename=c:\\tmp\\file_1950-01-12-10.db";
+            file = FileRoller.GetFilename(connStr, RollingPeriod.Hourly, new DateTime(1950, 01, 12, 10, 31, 0));
+            Debug.Assert(expected == file);
+        }
+        public static void TestHalfHourly()
+        {
+            var expected = "filename=c:\\tmp\\file_1950-01-12-1000.db";
+            var file = FileRoller.GetFilename(connStr, RollingPeriod.HalfHour, new DateTime(1950, 01, 12, 10, 4, 30));
+            Debug.Assert(expected == file);
+
+            expected = "filename=c:\\tmp\\file_1950-01-12-1030.db";
+            file = FileRoller.GetFilename(connStr, RollingPeriod.HalfHour, new DateTime(1950, 01, 12, 10, 31, 0));
+            Debug.Assert(expected == file);
+        }
+    }
     public class Program
     {
         private static readonly ILogger _logger = Log.ForContext<Program>();
 
         public static void Main(string[] args)
         {
-            var connectionString = @"c:\tmp\log1.db";
+            TestFileRoller.TestDaily();
+            TestFileRoller.TestQuarterly();
+            TestFileRoller.TestHalfHourly();
+            TestFileRoller.TestHourly();
+            var connectionString = @"filename=c:\tmp\log1.db";
             var mapper = new BsonMapper();
 
             if (File.Exists(connectionString))
@@ -21,7 +77,7 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.LiterateConsole(LogEventLevel.Debug)
-                .WriteTo.LiteDB(connectionString)
+                .WriteTo.LiteDB(connectionString, rollingFilePeriod: RollingPeriod.Quarterly)
                 .Enrich.WithProperty("app", "Serilog.Sinks.LiteDB.ConsoleTest")
                 .Enrich.FromLogContext()
                 .CreateLogger();
@@ -39,7 +95,7 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
 
             System.Threading.Thread.Sleep(6000);
 
-            using (var db = new LiteDatabase(connectionString))
+            using (var db = new LiteDatabase(FileRoller.GetFilename(connectionString, RollingPeriod.Quarterly, DateTime.UtcNow)))
             {
                 var result1 = db.GetCollection<BsonDocument>("log").FindOne(Query.Contains("_m", "Test"));
                 Console.WriteLine(result1.ToString());

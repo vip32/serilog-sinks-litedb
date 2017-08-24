@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Serilog.Sinks.LiteDB;
 
 namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
 {
@@ -31,6 +32,7 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
     public class LiteDBSink : PeriodicBatchingSink
     {
         private readonly string _connectionString;
+        private readonly RollingPeriod _rollingPeriod;
         private readonly string _logCollectionName;
         private readonly ITextFormatter _formatter;
 
@@ -38,12 +40,14 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         /// Construct a sink posting to the specified database.
         /// </summary>
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
+        /// <param name="rollingPeriod">When to roll a new file</param>
         /// <param name="batchPostingLimit">The batch posting limit.</param>
         /// <param name="period">The period.</param>
         /// <param name="logCollectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
         /// <param name="formatter">The formatter. Default is <see cref="LiteDbJsonFormatter" /> used</param>
         public LiteDBSink(
             string connectionString,
+            RollingPeriod rollingPeriod,
             int batchPostingLimit = DefaultBatchPostingLimit,
             TimeSpan? period = null,
             string logCollectionName = DefaultLogCollectionName,
@@ -51,6 +55,7 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
              : base(batchPostingLimit, period ?? DefaultPeriod)
         {
             _connectionString = connectionString;
+            _rollingPeriod = rollingPeriod;
             _logCollectionName = logCollectionName;
             _formatter = formatter;
         }
@@ -86,7 +91,7 @@ namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
         /// </remarks>
         protected override void EmitBatch(IEnumerable<LogEvent> events)
         {
-            using (var db = new LiteDatabase(_connectionString))
+            using (var db = new LiteDatabase(FileRoller.GetFilename(_connectionString, this._rollingPeriod, DateTime.UtcNow)))
             {
                 db.GetCollection(_logCollectionName)
                     .Insert(events.Select(e => AsDocument(e, _formatter)));
