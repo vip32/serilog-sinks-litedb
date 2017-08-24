@@ -5,7 +5,7 @@
     <AssemblyTitle>Serilog.Sinks.LiteDB</AssemblyTitle>
     <VersionPrefix>1.0.13</VersionPrefix>
     <Authors>vip32</Authors>
-    <TargetFrameworks>net45;netcoreapp1.1</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Serilog.Sinks.LiteDB</AssemblyName>
@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB" Version="3.0.0" />
+    <PackageReference Include="LiteDB" Version="3.1.2" />
     <PackageReference Include="Serilog" Version="2.3.0" />
     <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="2.1.0" />
   </ItemGroup>
