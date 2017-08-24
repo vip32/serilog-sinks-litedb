@@ -41,7 +41,7 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
 
             using (var db = new LiteDatabase(connectionString))
             {
-                var result1 = db.GetCollection<BsonDocument>("log").FindOne(Query.Contains("_m", "Test"));
+                var result1 = db.GetCollection("log").FindOne(Query.Contains("_m", "TEST"));
                 Console.WriteLine(result1.ToString());
                 Console.WriteLine("");
 
