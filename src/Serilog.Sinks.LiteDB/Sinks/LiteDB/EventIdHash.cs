@@ -14,7 +14,7 @@
 
 using System;
 
-namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
+namespace Serilog.Sinks.LiteDB
 {
     /// <summary>
     /// Hash functions for message templates. See <see cref="Compute"/>.

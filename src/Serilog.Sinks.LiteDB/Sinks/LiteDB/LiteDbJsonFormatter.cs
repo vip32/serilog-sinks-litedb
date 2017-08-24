@@ -21,7 +21,7 @@ using System.Linq;
 using Serilog.Parsing;
 using System.Globalization;
 
-namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
+namespace Serilog.Sinks.LiteDB
 {
     /// <summary>
     /// An <see cref="ITextFormatter"/> that writes events in a compact JSON format, for consumption in environments
