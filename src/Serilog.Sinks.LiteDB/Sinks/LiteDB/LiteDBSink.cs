@@ -24,7 +24,7 @@ using System.Linq;
 using System;
 using Serilog.Sinks.LiteDB;
 
-namespace Serilog.Sinks.MongoDB.Sinks.LiteDB
+namespace Serilog.Sinks.LiteDB
 {
     /// <summary>
     /// Writes log events as documents to a LiteDB database.

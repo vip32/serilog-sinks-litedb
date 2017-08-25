@@ -17,7 +17,6 @@ using Serilog.Configuration;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Sinks.LiteDB;
-using Serilog.Sinks.MongoDB.Sinks.LiteDB;
 
 namespace Serilog
 {
