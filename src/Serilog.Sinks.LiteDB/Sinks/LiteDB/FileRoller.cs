@@ -75,7 +75,7 @@ namespace Serilog.Sinks.LiteDB
                 var all = from kvp in str.Split(';')
                     let kv = kvp.Split('=')
                     select new { key = kv.First(), value = kv.Last() };
-                return all.ToDictionary(a => a.key, a => a.value, StringComparer.InvariantCultureIgnoreCase);
+                return all.ToDictionary(a => a.key, a => a.value, StringComparer.OrdinalIgnoreCase);
             }
 
             public static string Create(IDictionary<string, string> connStrInfo)
