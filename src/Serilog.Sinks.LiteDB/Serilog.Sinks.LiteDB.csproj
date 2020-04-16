@@ -3,9 +3,9 @@
   <PropertyGroup>
     <Description>The LiteDB sink for Serilog</Description>
     <AssemblyTitle>Serilog.Sinks.LiteDB</AssemblyTitle>
-    <VersionPrefix>1.0.13</VersionPrefix>
+    <VersionPrefix>1.0.14</VersionPrefix>
     <Authors>vip32</Authors>
-    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Serilog.Sinks.LiteDB</AssemblyName>
@@ -22,9 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB" Version="3.1.2" />
-    <PackageReference Include="Serilog" Version="2.3.0" />
-    <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="2.1.0" />
+    <PackageReference Include="LiteDB" Version="5.0.7" />
+    <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
