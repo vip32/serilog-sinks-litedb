@@ -15,17 +15,17 @@ steps:
   displayName: Apply git version
 
 - task: UseDotNet@2
-    displayName: Install dotnet SDK
-    inputs:
-      version: '3.1.x'
-      packageType: sdk
+  displayName: Install dotnet SDK
+  inputs:
+    version: '3.1.x'
+    packageType: sdk
 
 - task: DotNetCoreCLI@2
-    displayName: Restore project dependencies
-    inputs:
-      command: restore
-      projects: '**/*.csproj'
-      verbosityRestore: Normal
+  displayName: Restore project dependencies
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+    verbosityRestore: Normal
 
 - task: DotNetCoreCLI@2
   displayName: Build projects
