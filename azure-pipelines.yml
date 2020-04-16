@@ -8,7 +8,7 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2019'
 
 steps:
 - task: GitVersion@5
