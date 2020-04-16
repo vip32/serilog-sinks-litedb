@@ -21,6 +21,13 @@ steps:
     packageType: sdk
 
 - task: DotNetCoreCLI@2
+    displayName: Restore project dependencies
+    inputs:
+      command: restore
+      projects: '**/*.csproj'
+      verbosityRestore: Normal
+
+- task: DotNetCoreCLI@2
   displayName: Build projects
   inputs:
     projects: '**/*.sln'
