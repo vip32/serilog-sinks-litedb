@@ -44,7 +44,7 @@ namespace Serilog.Sinks.LiteDB
         /// <param name="batchPostingLimit">The batch posting limit.</param>
         /// <param name="period">The period.</param>
         /// <param name="logCollectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
-        /// <param name="formatter">The formatter. Default is <see cref="LiteDbJsonFormatter" /> used</param>
+        /// <param name="formatter">The formatter. Default is <see cref="LiteDBJsonFormatter" /> used</param>
         public LiteDBSink(
             string connectionString,
             RollingPeriod rollingPeriod,
@@ -79,7 +79,7 @@ namespace Serilog.Sinks.LiteDB
         /// <summary>
         /// The default formatter
         /// </summary>
-        public static ITextFormatter DefaultFormatter = new LiteDbJsonFormatter();
+        public static ITextFormatter DefaultFormatter = new LiteDBJsonFormatter();
 
         /// <summary>
         /// Emit a batch of log events, running asynchronously.

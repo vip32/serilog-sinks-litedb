@@ -27,16 +27,16 @@ namespace Serilog.Sinks.LiteDB
     /// An <see cref="ITextFormatter"/> that writes events in a compact JSON format, for consumption in environments
     /// without message template support. Message templates are rendered into text and a hashed event id is included.
     /// </summary>
-    public class LiteDbJsonFormatter : ITextFormatter
+    public class LiteDBJsonFormatter : ITextFormatter
     {
         readonly JsonValueFormatter _valueFormatter;
 
         /// <summary>
-        /// Construct a <see cref="LiteDbJsonFormatter"/>, optionally supplying a formatter for
+        /// Construct a <see cref="LiteDBJsonFormatter"/>, optionally supplying a formatter for
         /// <see cref="LogEventPropertyValue"/>s on the event.
         /// </summary>
         /// <param name="valueFormatter">A value formatter, or null.</param>
-        public LiteDbJsonFormatter(JsonValueFormatter valueFormatter = null)
+        public LiteDBJsonFormatter(JsonValueFormatter valueFormatter = null)
         {
             _valueFormatter = valueFormatter ?? new JsonValueFormatter(typeTagName: "$type");
         }
