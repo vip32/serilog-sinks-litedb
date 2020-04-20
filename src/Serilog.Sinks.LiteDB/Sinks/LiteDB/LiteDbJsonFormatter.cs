@@ -53,7 +53,7 @@ namespace Serilog.Sinks.LiteDB
         }
 
         /// <summary>
-        /// Format the log event into the output.
+        /// Format the log event into the output
         /// </summary>
         /// <param name="logEvent">The event to format.</param>
         /// <param name="output">The output.</param>
