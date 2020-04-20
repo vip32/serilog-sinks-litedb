@@ -64,9 +64,12 @@ namespace Serilog.Sinks.LiteDB
             if (output == null) throw new ArgumentNullException(nameof(output));
             if (valueFormatter == null) throw new ArgumentNullException(nameof(valueFormatter));
 
-            output.Write("{\"_t\":\"");
-            output.Write(logEvent.Timestamp.UtcDateTime.ToString("O"));
-            output.Write("\",\"_ty\":");
+            //output.Write("{\"_t\":\"");
+            output.Write("{\"_t\":");
+            //output.Write(logEvent.Timestamp.UtcDateTime.ToString("O"));
+            output.Write($"{{ \"$date\": \"{logEvent.Timestamp.UtcDateTime:O}\" }}");  // fix for https://github.com/vip32/serilog-sinks-litedb/issues/10
+            //output.Write("\",\"_ty\":");
+            output.Write(",\"_ty\":");
             output.Write(logEvent.Timestamp.UtcDateTime.Year);
             output.Write(",\"_tm\":");
             output.Write(logEvent.Timestamp.UtcDateTime.Month);
