@@ -51,6 +51,8 @@ steps:
     packDirectory: '$(Build.ArtifactStagingDirectory)'
     buildProperties: 'Version=$(GitVersion.NuGetVersion)'
     verbosityPack: Normal
+    includesymbols: false
+    includesource: false
 
 - task: DotNetCoreCLI@2
   displayName: Push nuget packages # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160#issuecomment-509044113
