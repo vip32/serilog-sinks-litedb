@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{E9D1B5
 		.editorconfig = .editorconfig
 		azure-pipelines.yml = azure-pipelines.yml
 		assets\CommonAssemblyInfo.cs = assets\CommonAssemblyInfo.cs
+		GitVersion.yml = GitVersion.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
