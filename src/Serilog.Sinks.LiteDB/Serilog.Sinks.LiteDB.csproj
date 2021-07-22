@@ -10,9 +10,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>Serilog.Sinks.LiteDB</PackageId>
     <PackageTags>serilog;litedb;nosql</PackageTags>
-    <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
+    <PackageIcon>http://serilog.net/images/serilog-sink-nuget.png</PackageIcon>
     <PackageProjectUrl>https://github.com/vip32/serilog-sinks-litedb</PackageProjectUrl>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/vip32/serilog-sinks-litedb</RepositoryUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
