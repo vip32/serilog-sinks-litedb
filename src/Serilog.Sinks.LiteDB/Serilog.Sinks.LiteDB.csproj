@@ -12,7 +12,7 @@
     <PackageTags>serilog;litedb;nosql</PackageTags>
     <PackageIcon>http://serilog.net/images/serilog-sink-nuget.png</PackageIcon>
     <PackageProjectUrl>https://github.com/vip32/serilog-sinks-litedb</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/vip32/serilog-sinks-litedb</RepositoryUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
