@@ -10,7 +10,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>Serilog.Sinks.LiteDB</PackageId>
     <PackageTags>serilog;litedb;nosql</PackageTags>
-    <PackageIcon>http://serilog.net/images/serilog-sink-nuget.png</PackageIcon>
+    <!-- <PackageIcon>http://serilog.net/images/serilog-sink-nuget.png</PackageIcon> -->
     <PackageProjectUrl>https://github.com/vip32/serilog-sinks-litedb</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
