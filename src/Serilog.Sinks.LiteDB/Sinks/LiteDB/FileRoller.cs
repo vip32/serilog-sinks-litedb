@@ -19,6 +19,11 @@ namespace Serilog.Sinks.LiteDB
         /// <returns></returns>
         public static string GetFilename(string connectionString, RollingPeriod period, DateTime date)
         {
+            if (period == RollingPeriod.Never)
+            {
+                return connectionString;
+            }
+            
             var c = ConnectionStringParser.Parse(connectionString);
             var fullpath = c["filename"];
 
@@ -30,8 +35,6 @@ namespace Serilog.Sinks.LiteDB
 
             switch (period)
             {
-                case RollingPeriod.Never:
-                    return fullpath;
                 case RollingPeriod.HalfHour:
                 case RollingPeriod.Quarterly:
                     var itv = period == RollingPeriod.Quarterly ? 15 : 30;
