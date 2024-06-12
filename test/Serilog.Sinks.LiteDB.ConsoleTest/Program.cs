@@ -76,7 +76,7 @@ namespace Serilog.Sinks.LiteDB.ConsoleTest
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.LiterateConsole(LogEventLevel.Debug)
+                .WriteTo.Console(LogEventLevel.Debug)
                 .WriteTo.LiteDB(connectionString, rollingFilePeriod: RollingPeriod.Quarterly)
                 .Enrich.WithProperty("app", "Serilog.Sinks.LiteDB.ConsoleTest")
                 .Enrich.FromLogContext()

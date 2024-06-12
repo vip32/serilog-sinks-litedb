@@ -14,6 +14,7 @@
 
 using System;
 using Serilog.Configuration;
+using Serilog.Core.Sinks.Batching;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Sinks.LiteDB;
@@ -58,8 +59,11 @@ namespace Serilog
             if (string.IsNullOrWhiteSpace(logCollectionName)) throw new ArgumentNullException(nameof(logCollectionName));
             if (formatter == null) formatter = LiteDBSink.DefaultFormatter;
 
+            var batchingOptions = new BatchingOptions{ BufferingTimeLimit = period ?? LiteDBSink.DefaultPeriod, BatchSizeLimit = batchPostingLimit};
+
             return loggerConfiguration.Sink(
-                    new LiteDBSink(databaseUrl, rollingFilePeriod, batchPostingLimit, period, logCollectionName, formatter),
+                    new LiteDBSink(databaseUrl, rollingFilePeriod, logCollectionName, formatter),
+                    batchingOptions,
                     restrictedToMinimumLevel);
         }
     }
