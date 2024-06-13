@@ -11,8 +11,14 @@ pool:
   vmImage: 'windows-2019'
 
 steps:
-- task: GitVersion@5
-  displayName: Apply git version
+
+- task: UseDotNet@2
+  displayName: Use .NET 2.1 (GitVersion) SDK
+  condition: succeeded()
+  inputs:
+    version: '2.1.x'
+    performMultiLevelLookup: true
+    includePreviewVersions: false
 
 - task: UseDotNet@2
   displayName: Use .NET 6 SDK
@@ -29,6 +35,9 @@ steps:
     version: '8.0.x'
     performMultiLevelLookup: true
     includePreviewVersions: false
+
+- task: GitVersion@5
+  displayName: Apply git version
 
 - task: DotNetCoreCLI@2
   displayName: Restore project dependencies
