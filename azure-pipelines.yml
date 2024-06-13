@@ -15,10 +15,20 @@ steps:
   displayName: Apply git version
 
 - task: UseDotNet@2
-  displayName: Install dotnet SDK
+  displayName: Use .NET 6 SDK
+  condition: succeeded()
   inputs:
-    version: '3.1.x'
-    packageType: sdk
+    version: '6.0.x'
+    performMultiLevelLookup: true
+    includePreviewVersions: false
+
+- task: UseDotNet@2
+  displayName: Use .NET 8 SDK
+  condition: succeeded()
+  inputs:
+    version: '8.0.x'
+    performMultiLevelLookup: true
+    includePreviewVersions: false
 
 - task: DotNetCoreCLI@2
   displayName: Restore project dependencies
