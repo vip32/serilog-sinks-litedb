@@ -17,7 +17,6 @@ using Serilog.Core;
 using LiteDB;
 using System.IO;
 using Serilog.Formatting;
-using Serilog.Sinks.PeriodicBatching;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +28,7 @@ namespace Serilog.Sinks.LiteDB
     /// <summary>
     /// Writes log events as documents to a LiteDB database.
     /// </summary>
-    public class LiteDBSink : PeriodicBatchingSink
+    public class LiteDBSink : IBatchedLogEventSink
     {
         private readonly string _connectionString;
         private readonly RollingPeriod _rollingPeriod;
@@ -41,18 +40,13 @@ namespace Serilog.Sinks.LiteDB
         /// </summary>
         /// <param name="connectionString">The URL of a LiteDB database, or connection string name containing the URL.</param>
         /// <param name="rollingPeriod">When to roll a new file</param>
-        /// <param name="batchPostingLimit">The batch posting limit.</param>
-        /// <param name="period">The period.</param>
         /// <param name="logCollectionName">Name of the LiteDb collection to use for the log. Default is "log".</param>
         /// <param name="formatter">The formatter. Default is <see cref="LiteDBJsonFormatter" /> used</param>
         public LiteDBSink(
             string connectionString,
             RollingPeriod rollingPeriod,
-            int batchPostingLimit = DefaultBatchPostingLimit,
-            TimeSpan? period = null,
             string logCollectionName = DefaultLogCollectionName,
             ITextFormatter formatter = null)
-             : base(batchPostingLimit, period ?? DefaultPeriod)
         {
             _connectionString = connectionString;
             _rollingPeriod = rollingPeriod;
@@ -81,22 +75,20 @@ namespace Serilog.Sinks.LiteDB
         /// </summary>
         public static ITextFormatter DefaultFormatter = new LiteDBJsonFormatter();
 
-        /// <summary>
-        /// Emit a batch of log events, running asynchronously.
-        /// </summary>
-        /// <param name="events">The events to emit.</param>
-        /// <remarks>
-        /// Override either <see cref="M:Serilog.Sinks.PeriodicBatching.PeriodicBatchingSink.EmitBatch(System.Collections.Generic.IEnumerable{Serilog.Events.LogEvent})" /> or <see cref="M:Serilog.Sinks.PeriodicBatching.PeriodicBatchingSink.EmitBatchAsync(System.Collections.Generic.IEnumerable{Serilog.Events.LogEvent})" />,
-        /// not both. Overriding EmitBatch() is preferred.
-        /// </remarks>
-        protected override void EmitBatch(IEnumerable<LogEvent> events)
+        /// <inheritdoc />
+        public Task EmitBatchAsync(IReadOnlyCollection<LogEvent> events)
         {
             using (var db = new LiteDatabase(FileRoller.GetFilename(_connectionString, this._rollingPeriod, DateTime.UtcNow)))
             {
                 db.GetCollection(_logCollectionName)
                     .Insert(events.Select(e => AsDocument(e, _formatter)));
             }
+
+            return Task.CompletedTask;
         }
+
+        /// <inheritdoc />
+        public Task OnEmptyBatchAsync() => Task.CompletedTask;
 
         private BsonDocument AsDocument(LogEvent @event, ITextFormatter formatter)
         {
